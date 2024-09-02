@@ -2,6 +2,9 @@ package br.edu.iftm.rastreamento.controller;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,11 +40,21 @@ public class PacoteController {
 		return pacoteService.getPacoteById(id);
 	}
 
+	@Operation(description = "Busca pacotes pelo status")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o pacote"),
+			@ApiResponse(responseCode = "400", description = "Não existe o pacote com o status informado")
+	})
 	@GetMapping("/status/{status}")
 	public  List<Pacote> getPacoteByStatus(@PathVariable String status) {
 		return pacoteService.findPacoteByStatus(status);
 	}
 
+	@Operation(description = "Busca pacotes pelo destinatário")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Retorna o pacote"),
+			@ApiResponse(responseCode = "400", description = "Não existe o pacote para este destinatário")
+	})
 	@GetMapping("/destinatario/{destinatario}")
 	public  List<Pacote> getPacoteByDestinatario(@PathVariable String destinatario) {
 		return pacoteService.findPacoteByDestinatario(destinatario);
