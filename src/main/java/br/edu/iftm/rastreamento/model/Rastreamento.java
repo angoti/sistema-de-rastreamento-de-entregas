@@ -20,6 +20,7 @@ public class Rastreamento {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private Date dataHora;
 	private String status;
 	private String localizacao;

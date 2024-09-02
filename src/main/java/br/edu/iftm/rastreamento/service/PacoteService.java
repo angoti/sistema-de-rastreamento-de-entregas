@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import br.edu.iftm.rastreamento.service.exceptions.NaoAcheiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,20 @@ public class PacoteService {
     @Autowired
     private RastreamentoRepository rastreamentoRepository;
 
+    public List<Pacote> findPacoteByStatus(String status) {
+        Iterable<Pacote> pacoteIterable = pacoteRepository.findByStatusContaining(status);
+        List<Pacote> pacoteList = new ArrayList<>();
+        pacoteIterable.forEach(pacoteList::add);
+        return pacoteList;
+    }
+
+    public List<Pacote> findPacoteByDestinatario(String destinatario) {
+        Iterable<Pacote> pacoteIterable = pacoteRepository.findByDestinatarioContaining(destinatario);
+        List<Pacote> pacoteList = new ArrayList<>();
+        pacoteIterable.forEach(pacoteList::add);
+        return pacoteList;
+    }
+
     public List<Pacote> getAllPacotes() {
         Iterable<Pacote> pacotesIterable = pacoteRepository.findAll();
         List<Pacote> pacotesList = new ArrayList<>();
@@ -30,15 +45,21 @@ public class PacoteService {
     }
 
     public Pacote getPacoteById(Long id) {
-        return pacoteRepository.findById(id).get();
+        return pacoteRepository.findById(id).orElseThrow(
+                () -> new  NaoAcheiException("Pacote não existente, id incorreto")
+        );
     }
 
     public Pacote createPacote(Pacote pacote) {
+        Rastreamento primeiroRastreio = pacote.getRastreamentos().get(pacote.getRastreamentos().size() - 1);
+        rastreamentoRepository.save(primeiroRastreio);
         return pacoteRepository.save(pacote);
     }
 
     public Pacote updatePacote(Long id, Pacote pacoteDetails) {
-        Pacote pacote = pacoteRepository.findById(id).get();
+        Pacote pacote = pacoteRepository.findById(id).orElseThrow(
+                () -> new  NaoAcheiException("Pacote não existente, id incorreto")
+        );
         pacote.setId(id);
         pacote.atualizarStatus(pacoteDetails.getStatus(), Date.from(Instant.now()), "não implementado");
         //obter o ultimo rastreamento

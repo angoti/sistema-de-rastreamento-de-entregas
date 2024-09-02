@@ -37,6 +37,16 @@ public class PacoteController {
 		return pacoteService.getPacoteById(id);
 	}
 
+	@GetMapping("/status/{status}")
+	public  List<Pacote> getPacoteByStatus(@PathVariable String status) {
+		return pacoteService.findPacoteByStatus(status);
+	}
+
+	@GetMapping("/destinatario/{destinatario}")
+	public  List<Pacote> getPacoteByDestinatario(@PathVariable String destinatario) {
+		return pacoteService.findPacoteByDestinatario(destinatario);
+	}
+
 	@PutMapping("/{id}")
 	public Pacote updatePacote(@PathVariable Long id, @RequestBody Pacote pacoteDetails) {
 		return pacoteService.updatePacote(id, pacoteDetails);
