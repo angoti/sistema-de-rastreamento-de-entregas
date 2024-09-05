@@ -2,10 +2,6 @@
 #---------------------------
 
 ###
-GET /pacotes
-Host: localhost:8080
-
-###
 POST /pacotes
 Host: localhost:8080
 Content-Type: application/json
@@ -14,15 +10,28 @@ Content-Type: application/json
 		"idUnico": "ABCD1234567",
 		"destinatario": "Hermenegildo Silva",
 		"endereco": {
-			"id":2
+			"id":1
 		},
 		"status": "pendente"
 }
 
 ###
+GET /pacotes
+Host: localhost:8080
+
+###
 GET /pacotes/2
 Host: localhost:8080
 
+###
+GET /pacotes/endereco/2
+Host: localhost:8080
+Content-Type: application/json
+
+###
+GET /pacotes/status/em trânsito
+Host: localhost:8080
+Content-Type: application/json
 
 ###
 PUT /pacotes/2
@@ -57,7 +66,7 @@ Host: localhost:8080
 # Endereco
 #--------------------------------------------------------
 ###
-GET /enderecos/11
+GET /enderecos
 Host: localhost:8080
 
 ###
@@ -66,7 +75,7 @@ Host: localhost:8080
 Content-Type: application/json
 
 {
-	"rua": "Rua das Flores",
+	"rua": "Rua primeiro teste",
 	"numero": 123,
 	"cidade": "São Paulo",
 	"estado": "SP",

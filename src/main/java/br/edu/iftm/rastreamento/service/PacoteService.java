@@ -8,10 +8,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.edu.iftm.rastreamento.model.Endereco;
 import br.edu.iftm.rastreamento.model.Pacote;
 import br.edu.iftm.rastreamento.model.Rastreamento;
 import br.edu.iftm.rastreamento.repository.PacoteRepository;
 import br.edu.iftm.rastreamento.repository.RastreamentoRepository;
+import br.edu.iftm.rastreamento.service.exceptions.NaoAcheiException;
 
 @Service
 public class PacoteService {
@@ -30,7 +32,7 @@ public class PacoteService {
     }
 
     public Pacote getPacoteById(Long id) {
-        return pacoteRepository.findById(id).get();
+        return pacoteRepository.findById(id).orElseThrow(()-> new NaoAcheiException("Pacote não encontrado para o ID " + id + " informado"));
     }
 
     public Pacote createPacote(Pacote pacote) {
@@ -38,10 +40,11 @@ public class PacoteService {
     }
 
     public Pacote updatePacote(Long id, Pacote pacoteDetails) {
-        Pacote pacote = pacoteRepository.findById(id).get();
+        Pacote pacote = pacoteRepository.findById(id)
+                .orElseThrow(() -> new NaoAcheiException("A atualização não foi realizada proque o pacote não foi encontrado para o ID " + id + " informado"));
         pacote.setId(id);
         pacote.atualizarStatus(pacoteDetails.getStatus(), Date.from(Instant.now()), "não implementado");
-        //obter o ultimo rastreamento
+        // obter o ultimo rastreamento
         Rastreamento ultiRastreamento = pacote.getRastreamentos().get(pacote.getRastreamentos().size() - 1);
         rastreamentoRepository.save(ultiRastreamento);
         return pacoteRepository.save(pacote);
@@ -50,5 +53,15 @@ public class PacoteService {
     public void deletePacote(Long id) {
         Pacote pacote = pacoteRepository.findById(id).get();
         pacoteRepository.delete(pacote);
+    }
+
+    //busca pacotes por status
+    public List<Pacote> getPacotesByStatus(String status) {
+        return pacoteRepository.findByStatus(status);
+    }
+
+    //busca pacotes por endereco
+    public List<Pacote> getPacotesByEndereco(Endereco endereco) {
+        return pacoteRepository.findByEndereco(endereco);
     }
 }
